@@ -17,6 +17,7 @@ router.post("/", async (req, res) => {
       });
       var hobby = "";
       req.body.hobbies.trim();
+      req.body.hobbies = req.body.hobbies + ",";
       for (let i = 0; i < req.body.hobbies.length; i++) {
         if (req.body.hobbies[i] !== ",") {
           hobby += req.body.hobbies[i];
