@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./table.scss";
 import axios from "axios";
+import { createBrowserHistory } from "history";
+import { useHistory } from "react-router-dom";
 import { RotateCircleLoading } from "react-loadingg";
-function Table({ setPopup }) {
+import { Link } from "react-router-dom";
+function Table({ setPopup, setParticularUser }) {
+  const history = createBrowserHistory({ forceRefresh: true });
+  const fieldName = useRef();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
   const baseUrl = "http://localhost:5000/api/users/";
@@ -11,15 +16,30 @@ function Table({ setPopup }) {
     const fetchData = async () => {
       const result = await axios.get(`${baseUrl}`);
       setData(result.data);
-      console.log(result.data);
       setLoading(false);
     };
     setTimeout(() => {
       fetchData();
     }, 2000);
-
-    /*  console.log(data); */
   }, []);
+
+  const getParticularUser = async (id) => {
+    console.log(id);
+    history.push(`/${id}`);
+  };
+
+  const deleteUser = async (id) => {
+    console.log(id);
+    await axios.delete(`${baseUrl}${id}`);
+    console.log("deleted");
+    history.push("/");
+  };
+
+  const handleSort = async () => {
+    const result = await axios.get(`${baseUrl}sort/${fieldName.current.value}`);
+    console.log(result.data);
+    setData(result.data);
+  };
   return (
     <div className="table">
       {loading === true ? (
@@ -40,11 +60,12 @@ function Table({ setPopup }) {
               <caption>The Data</caption>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Id</th>
-                  <th>Email</th>
-                  <th>Phone No</th>
-                  <th>Hobbies</th>
+                  <th>name</th>
+                  <th>id</th>
+                  <th>email</th>
+                  <th>phoneNo</th>
+                  <th>hobbies</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -59,19 +80,55 @@ function Table({ setPopup }) {
                         <span key={index}>{h},</span>
                       ))}
                     </td>
+                    <td>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          getParticularUser(d._id);
+                        }}
+                        className="table__button"
+                      >
+                        Update
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          deleteUser(d._id);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              setPopup(true);
-            }}
-          >
-            Open Popup Form
-          </button>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <button
+              style={{ margin: "10px" }}
+              onClick={(e) => {
+                e.preventDefault();
+                setPopup(true);
+              }}
+            >
+              {" "}
+              Open Popup Form
+            </button>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <p>Sort By Which Field?</p>
+              <input type="text" ref={fieldName} placeholder="Field Name" />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleSort();
+                }}
+              >
+                Sort Now
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>

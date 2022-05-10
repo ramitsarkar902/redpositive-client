@@ -4,13 +4,15 @@ import { FaTelegramPlane } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { CgDanger } from "react-icons/cg";
 import axios from "axios";
-
+import { useHistory, useParams } from "react-router-dom";
+import { createBrowserHistory } from "history";
 function Form({ setPopup }) {
+  const history = createBrowserHistory({ forceRefresh: true });
   const baseUrl = "http://localhost:5000/api/users/";
   var phoneNo = useRef();
   var email = useRef();
-  var name = useRef("");
-  var hobbies = useRef("");
+  var name = useRef();
+  var hobbies = useRef();
 
   const [error, setError] = useState({
     emailError: false,
@@ -18,14 +20,42 @@ function Form({ setPopup }) {
     nameError: false,
   });
 
-  /*  useEffect(() => {
-    if (phoneNo.current.value !== null) {
-      if (email.current.value !== null) {
-        validateData();
-      }
-    }
-  }, [phoneNo.current.value, email.current.value]); */
+  const [data, setData] = useState();
+  const id = useParams().id;
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await axios.get(`http://localhost:5000/api/users/${id}`);
+        setData(result.data);
+        email.current.value = result.data.email;
+        name.current.value = result.data.name;
+        phoneNo.current.value = result.data.phoneNo;
+        hobbies.current.value = result.data.hobbies;
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  /*  if (id) {
+    name.current.value = data.name;
+    email.current.value = data.email;
+    
+  } */
+
+  /*  const handleTest = async () => {
+    try {
+      const result = await axios.get(`http://localhost:5000/api/users/${id}`);
+      console.log(result.data);
+      setData(result.data);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+ */
   useEffect(() => {
     if (error.emailError === true) {
       email.current.focus();
@@ -48,8 +78,13 @@ function Form({ setPopup }) {
       phoneNo: phoneNo.current.value,
       hobbies: hobbies.current.value,
     };
-    await axios.post(`${baseUrl}`, user);
-    console.log(user);
+    if (id) {
+      await axios.put(`http://localhost:5000/api/users/${id}`, user);
+      history.push("/");
+    } else {
+      await axios.post(`${baseUrl}`, user);
+      console.log(user);
+    }
     setPopup(false);
   };
 
@@ -78,12 +113,21 @@ function Form({ setPopup }) {
           handleSubmit();
         }}
       >
+        {/* <button
+          onClick={(e) => {
+            e.preventDefault();
+            handleTest();
+          }}
+        >
+          Hello
+        </button> */}
         <div className="popup__form-wrapper">
           <MdCancel
             className="popup__form-close"
             onClick={(e) => {
               e.preventDefault();
               setPopup(false);
+              history.push("/");
             }}
           />
 
@@ -128,7 +172,7 @@ function Form({ setPopup }) {
               type="submit"
             >
               <FaTelegramPlane />
-              Send
+              {id ? "Update" : "Submit"}
             </button>
           </div>
         </div>

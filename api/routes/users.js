@@ -45,6 +45,16 @@ router.get("/", async (req, res) => {
   }
 });
 
+//get a particular user
+router.get("/:id", async (req, res) => {
+  try {
+    const user = await Users.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 //update a specific user
 router.put("/:id", async (req, res) => {
   try {
@@ -96,5 +106,15 @@ router.delete("/:id", async (req, res) => {
     res.status(400).json(error);
   }
 });
+
+router.get("/sort/:field", async (req, res) => {
+  try {
+    const users = await Users.find().sort({ [req.params.field]: 1 });
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+//
 
 module.exports = router;
