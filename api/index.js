@@ -7,11 +7,11 @@ const helmet = require("helmet");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cors = require("cors");
-/* const corsOptions = {
+const corsOptions = {
   origin: "*",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
-}; */
+};
 
 const userRoute = require("./routes/users");
 dotenv.config();
@@ -27,7 +27,6 @@ mongoose.connect(
 const API_URL = "/api/"; //for the api url call
 
 //middleware
-app.enable("trust proxy");
 app.use(express.json());
 /* app.use(helmet());
 app.use(morgan("common")); */
@@ -38,9 +37,9 @@ app.use(bodyParser.json());
 // for parsing application/xwww-
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(morgan("dev"));
+app.use(morgan("common"));
 app.use(helmet());
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.use(`${API_URL}users`, userRoute);
 
