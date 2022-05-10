@@ -10,7 +10,7 @@ function Table({ setPopup, setParticularUser }) {
   const fieldName = useRef();
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
-  const baseUrl = "http://localhost:5000/api/users/";
+  const baseUrl = "https://redpositive-backend.herokuapp.com/api/users/";
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {

@@ -8,7 +8,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { createBrowserHistory } from "history";
 function Form({ setPopup }) {
   const history = createBrowserHistory({ forceRefresh: true });
-  const baseUrl = "http://localhost:5000/api/users/";
+  const baseUrl = "https://redpositive-backend.herokuapp.com/api/users/";
   var phoneNo = useRef();
   var email = useRef();
   var name = useRef();
@@ -26,7 +26,9 @@ function Form({ setPopup }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(`http://localhost:5000/api/users/${id}`);
+        const result = await axios.get(
+          `https://redpositive-backend.herokuapp.com/api/users/${id}`
+        );
         setData(result.data);
         email.current.value = result.data.email;
         name.current.value = result.data.name;
@@ -39,23 +41,6 @@ function Form({ setPopup }) {
     fetchData();
   }, [id]);
 
-  /*  if (id) {
-    name.current.value = data.name;
-    email.current.value = data.email;
-    
-  } */
-
-  /*  const handleTest = async () => {
-    try {
-      const result = await axios.get(`http://localhost:5000/api/users/${id}`);
-      console.log(result.data);
-      setData(result.data);
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
- */
   useEffect(() => {
     if (error.emailError === true) {
       email.current.focus();
@@ -79,7 +64,10 @@ function Form({ setPopup }) {
       hobbies: hobbies.current.value,
     };
     if (id) {
-      await axios.put(`http://localhost:5000/api/users/${id}`, user);
+      await axios.put(
+        `https://redpositive-backend.herokuapp.com/api/users/${id}`,
+        user
+      );
       history.push("/");
     } else {
       await axios.post(`${baseUrl}`, user);

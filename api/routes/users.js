@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
         if (req.body.hobbies[i] !== ",") {
           hobby += req.body.hobbies[i];
         }
-        if (req.body.hobbies[i] === ",") {
+        if (req.body.hobbies[i] === "," || req.body.hobbies[i] === ".") {
           await newUser.hobbies.push(hobby);
           hobby = "";
         }
@@ -67,7 +67,7 @@ router.put("/:id", async (req, res) => {
       for (let i = 0; i < req.body.hobbies.length; i++) {
         if (req.body.hobbies[i] !== ",") {
           h += req.body.hobbies[i];
-        } else if (req.body.hobbies[i] === ",") {
+        } else if (req.body.hobbies[i] === "," || req.body.hobbies[i] === ".") {
           if (hobby.includes(h)) {
             h = "";
             continue;
