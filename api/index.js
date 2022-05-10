@@ -37,23 +37,9 @@ app.use(bodyParser.json());
 
 // for parsing application/xwww-
 app.use(bodyParser.urlencoded({ extended: true }));
-//form-urlencoded
 
-//storing on mongodb
-
-/* const storage = new GridFsStorage({
-  url: process.env.MONGO_URL,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      const filename = buf.toString("hex") + path.extname(file.originalname);
-      const fileInfo = {
-        fileName: filename,
-        bucketName: "uploads",
-      };
-      resolve(fileInfo);
-    });
-  },
-}); */
+app.use(morgan("common"));
+app.use(helmet());
 
 app.use(`${API_URL}users`, userRoute);
 
