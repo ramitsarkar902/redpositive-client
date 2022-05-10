@@ -43,6 +43,6 @@ app.use(helmet());
 
 app.use(`${API_URL}users`, userRoute);
 
-app.listen(`${process.env.PORT}` || 5000, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log("Server Running");
 });
